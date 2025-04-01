@@ -1,0 +1,56 @@
+---
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+
+import type { Props } from '@astrojs/starlight/props';
+import links from '../../links';
+---
+
+<div>
+    <ul>
+        {links.map( ({link,  label, target = "_blank"}) => (
+                <li>
+                    <a class="top-link" href={link} target={target || "_blank"}>{label}</a>
+                </li>
+        ))}
+    </ul>
+    <Default {...Astro.props} />
+</div>
+
+<style>
+    .top-link {
+        white-space: nowrap;
+    }
+    div {
+        display: flex;
+        align-items: center;
+        gap: var(--sl-nav-gap);
+    }
+    ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: var(--sl-nav-gap);
+    }
+    a {
+        text-decoration: none;
+        font-weight: 600;
+        color: var(--sl-color-text-accent);
+    }
+
+    a:hover,
+    a:focus {
+        color: var(--sl-color-white);
+    }
+
+    [aria-current="page"],
+    [aria-current="page"]:hover,
+    [aria-current="page"]:focus {
+        font-weight: 600;
+    }
+
+    @media (min-width: 50rem) {
+        a {
+            font-size: var(--sl-text-sm);
+        }
+    }
+</style>

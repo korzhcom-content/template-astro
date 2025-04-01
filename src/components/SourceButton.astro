@@ -1,0 +1,39 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+const {href, text, icon = "github"} = Astro.props
+---
+<a class="source-button" href={href} target="_blank" rel="noopener noreferrer">
+    <Icon name={icon} />
+    <span>{text}</span>
+</a>
+
+<style>
+    .source-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--sl-color-gray-5);
+        gap: 0.5rem;
+        padding: 4px 8px;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        font-size: 14px;
+        
+        @media (hover: hover) {
+            &:hover {
+                cursor: pointer;
+                border: 1px solid var(--sl-color-gray-3);
+                background: var(--sl-color-gray-7, var(--sl-color-gray-6));            
+            }            
+        }
+
+        @media (hover: none) {
+            &:active {
+                cursor: pointer;
+                border: 1px solid var(--sl-color-gray-3);
+                background: var(--sl-color-gray-7, var(--sl-color-gray-6));            
+            }            
+        }
+    }
+</style>

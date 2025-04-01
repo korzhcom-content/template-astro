@@ -1,0 +1,15 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+
+const isHomepage = Astro.locals.starlightRoute.id === '';
+---
+
+{
+    isHomepage ? (
+       <footer class="page-footer"><p>Copyright by <a href="https://korzh.com">Korzh.com</a>. All Right Reserved.</p></footer>
+    ) : (
+        <Default {...Astro.props}>
+            <slot />
+        </Default>
+    )
+}

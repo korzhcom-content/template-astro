@@ -1,0 +1,41 @@
+---
+title: Component Name
+description: Component description!
+template: splash
+hero:
+  tagline: Component description or tag name!
+  image:
+    file: ../../assets/rocket.svg
+  actions:
+    - text: Read Docs
+      link: /component/docs/introduction
+      icon: open-book
+      variant: primary
+    - text: Buy License
+      link: 'https://korzh.com/easyquery#licensing'
+      icon: 'seti:shell'
+      variant: secondary
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+    <Card title="Organizing the data flow" icon="seti:puppet">
+        Any data processing in a database application usually begins and ends at the presentation level.
+    </Card>
+    <Card title="Complex queries" icon="seti:odata">
+        In many projects, the number of parameters by which you can search for data is in the tens or even hundreds.
+    </Card>
+    <Card title="Data visualization" icon="seti:svg">
+        EasyQuery includes many visual components both to build complex queries and to display the results of those queries in all possible variations.
+    </Card>
+    <Card title="Customization" icon="pen">
+        EasyQuery is a highly customizable tool. You can change almost everything in it - from the appearance of the user interface to the behavior of the query builder.
+    </Card>
+    <Card title="Integration" icon="seti:crystal_embedded">
+        EasyQuery can be easily integrated into any .NET application. It can work with any database and any ORM.
+    </Card>
+    <Card title="Charts" icon="seti:plan">
+        EasyQuery includes a set of charting components that can be used to visualize the data in the form of various types of charts.
+    </Card>
+</CardGrid>
