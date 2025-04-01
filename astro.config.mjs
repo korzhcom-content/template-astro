@@ -7,9 +7,9 @@ import { rehypeLinks } from './plugins/rehype-links';
 import { updateFrontmatter } from './plugins/update-frontmatter';
 import getSidebar from "./tools/get-sidebar.js"
 
-const base = 'easyquery/docs';
+const base = 'component/docs';
 const site = 'https://korzh.com';
-const outDir = './dist/easyquery/docs';
+const outDir = './dist/component/docs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,7 +22,7 @@ export default defineConfig({
 			title: 'Component.Name',
 			favicon: '/favicon.ico',
 			social: {
-				github: 'https://github.com/korzhcom-content/easyquery.net-docs-astro',
+				github: 'https://github.com/korzhcom-content/component-docs',
 				discord: 'https://discord.gg',
 			},
 			sidebar: [
