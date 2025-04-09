@@ -21,10 +21,7 @@ export default defineConfig({
 		starlight({
 			title: 'Component.Name',
 			favicon: '/favicon.ico',
-			social: {
-				github: 'https://github.com/korzhcom-content/component-docs',
-				discord: 'https://discord.gg',
-			},
+			social: [],
 			sidebar: [
 				{ label: "Introduction", slug: "introduction" },
 				...getSidebar("./src/content/docs/getting-started", true),

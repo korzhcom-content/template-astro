@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { Progress, clearConsole } from '@olton/progress'
+import { Progress } from '@olton/progress'
+import { Screen } from '@olton/terminal'
 
 if (process.argv.length < 3) {
     console.error("Usage: node create-indexes.js <folder path>");
     process.exit(1);
 }
 
-clearConsole()
+Screen.clear()
 
 const rootFolder = process.argv[2];
 const dirs = [];

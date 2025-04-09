@@ -5,7 +5,8 @@ import { globSync } from 'glob';
 import { readFileSync, writeFileSync, renameSync } from 'fs';
 import { basename, dirname, sep } from 'path';
 import matter from 'gray-matter';
-import { Progress, clearConsole } from "@olton/progress"
+import { Progress } from "@olton/progress"
+import { Screen } from "@olton/terminal"
 
 if (process.argv.length < 3) {
     console.error("Usage: node add-frontmatter.js <folder path>");
@@ -67,8 +68,11 @@ function frontmatter(path, options = {}) {
 
         frontmatter.title = title
         frontmatter.slug = slug        
-        frontmatter.sidebar = {
-            order: 100,
+        
+        if (!frontmatter.sidebar) {
+            frontmatter.sidebar = {
+                order: 100,
+            }
         }
 
         const newContent = content
@@ -85,7 +89,7 @@ function frontmatter(path, options = {}) {
     console.log(`\n\nDone! ${files.length} files processed.\n`)
 }
 
-clearConsole()
+Screen.clear()
 
 frontmatter(root, {
     skip: ['index.md', 'index.mdx'],
