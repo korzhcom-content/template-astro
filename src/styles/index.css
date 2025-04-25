@@ -30,7 +30,10 @@
     }
 
     ul ul li {
-        margin-inline-start: 1rem;
+        margin-inline-start: 10px;
+        &:hover {
+            border-color: #1b7fff;
+        }
     }
 
     ul {
@@ -50,6 +53,7 @@
 .sidebar-pane {
     summary {
         justify-content: start;
+        padding-left: 0!important;
     }
 }
 
