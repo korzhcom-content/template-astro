@@ -15,36 +15,22 @@
             order: 1;
         }
     }
-    
+
     .top-level > li + li {
         margin-top: .25rem!important;
     }
-    
+
     .top-level > li > a {
         padding-left: 2rem!important;
         &::before {
             content: "📋";
             position: absolute;
-            left: 1.2rem;
+            left: 1.5rem;
         }
     }
-    
+
     ul ul li {
-        ul {
-            li {
-                a {
-                    padding-left: 14px;
-                }
-            }
-        }
-        
-        details {
-            padding-left: 0;
-        }
-        
-        & > a {
-            padding-left: 36px!important;
-        }
+        margin-inline-start: 1rem;
     }
 
     ul {
@@ -52,6 +38,18 @@
             font-size: 14px!important;
             font-weight: 500!important;
         }
+    }
+
+    .group-label {
+        a {
+            padding-left: 0!important;
+        }
+    }
+}
+
+.sidebar-pane {
+    summary {
+        justify-content: start;
     }
 }
 
@@ -93,7 +91,7 @@
             font-size: 4rem;
         }
     }
-    
+
     .actions {
         gap: 1rem;
     }
@@ -118,16 +116,16 @@ table {
     }
 
     td:not(:last-child) {
-        border-right: 1px solid var(--sl-color-gray-5);        
+        border-right: 1px solid var(--sl-color-gray-5);
     }
-    
+
     tr:nth-child(even) {
         background-color: var(--sl-color-gray-7);
     }
 }
 
 .sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
-     padding-inline-start: 1rem; 
+    padding-inline-start: 1rem;
 }
 
 code {
