@@ -9,10 +9,10 @@
         flex-direction: column;
 
         li:not(:has(> details)) {
-            order: 2;
+            /*order: 2;*/
         }
         li:has(> details) {
-            order: 1;
+            /*order: 1;*/
         }
     }
 
