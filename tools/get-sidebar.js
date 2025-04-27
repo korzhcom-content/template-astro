@@ -9,46 +9,86 @@ const getSlug = (fullPath, root, sep) => {
     return `${fullPath.replace(root, '').replace(/\\/g, '/')}`.split(sep).slice(0, -1).join(sep)
 }
 
+const getEntryPointData = entry => {
+    let name = entry.name, order = -1
+
+    if (entry.isDirectory()) {
+        const dirPath = path.join(entry.parentPath, entry.name)
+        if (fs.existsSync(path.join(dirPath, 'frontmatter.json'))) {
+            const fm = JSON.parse(fs.readFileSync(path.join(dirPath, 'frontmatter.json'), 'utf8'))
+            if (fm.title) { name = fm.title }
+            if (fm.sidebar && fm.sidebar.order) { order = fm.sidebar.order }
+        }
+        if (fs.existsSync(path.join(dirPath, '__section.md'))) {
+            name = fs.readFileSync(path.join(dirPath, '__section.md'), 'utf8').split('\n')[0]?.replace('#', '')?.trim()
+        }
+    } else {
+        const fm = matter(fs.readFileSync(path.join(entry.parentPath, entry.name), 'utf8'))
+        if (fm.data.title) { name = fm.data.title }
+        if (fm.data.sidebar && fm.data.sidebar.order) {
+            order = fm.data.sidebar.order
+        }
+    }
+
+    return [order,  name]
+}
+
+const sortBy = (a , b) => {
+    if (a.name === 'index.md' || b.name === 'index.md') {
+        return -1
+    }
+
+    if (a.isDirectory() && b.isDirectory()) {
+        return a.name.localeCompare(b.name)
+    } else if (a.isDirectory()) {
+        return -1
+    } else if (b.isDirectory()) {
+        return 1
+    } else {
+        const _a = matter(fs.readFileSync(path.join(a.parentPath, a.name), 'utf8'))
+        const _b = matter(fs.readFileSync(path.join(b.parentPath, b.name), 'utf8'))
+
+        if (_a.data.sidebar && _b.data.sidebar) {
+
+            if (_a.data.sidebar.order && _b.data.sidebar.order) {
+                if (_a.data.sidebar.order === _b.data.sidebar.order) {
+                    return _a.data.title.localeCompare(_b.data.title)
+                }
+                return _a.data.sidebar.order - _b.data.sidebar.order
+            }
+
+            return _a.data.title.localeCompare(_b.data.title)
+        }
+
+        return _a.data.title.localeCompare(_b.data.title)
+    }
+}
+
+const sortEntries = (a, b) => {
+    const [aOrder, aName] = getEntryPointData(a)
+    const [bOrder, bName] = getEntryPointData(b)
+
+    if (aOrder < 0 || bOrder < 0) {
+        // console.log(`Compare by name: ${aName} vs ${bName}`)
+        return aName.localeCompare(bName, "en")
+    }
+    // console.log(`Compare by order: ${a.name} vs ${b.name}`)
+    return aOrder - bOrder
+}
+
 function traverseDirectory (dir, parent) {
     try {
         parent.label = fs.existsSync(dir + path.sep + '__section.md')
-            ? fs.readFileSync(dir + path.sep + '__section.md', 'utf8').split('\n')[0].replace('#', '').trim() :
-            dir.replace(root_docs, '')
+          ? fs.readFileSync(dir + path.sep + '__section.md', 'utf8').split('\n')[0].replace('#', '').trim() :
+          dir.replace(root_docs, '')
 
         const entries = fs.readdirSync(dir, { withFileTypes: true })
-            .filter(entry => {
-                return !entry.name.startsWith('_')
-            })
-            .sort((a, b) => {
-                if (a.name === 'index.md' || b.name === 'index.md') {
-                    return -1
-                }
+          .filter(entry => {
+              return !entry.name.startsWith('_') && !entry.name.endsWith('.json')
+          })
+          .sort(sortEntries)
 
-                if (a.isDirectory() && b.isDirectory()) {
-                    return a.name.localeCompare(b.name)
-                } else if (a.isDirectory()) {
-                    return -1
-                } else if (b.isDirectory()) {
-                    return 1
-                } else {
-                    const _a = matter(fs.readFileSync(path.join(a.parentPath, a.name), 'utf8'))
-                    const _b = matter(fs.readFileSync(path.join(b.parentPath, b.name), 'utf8'))
-
-                    if (_a.data.sidebar && _b.data.sidebar) {
-
-                        if (_a.data.sidebar.order && _b.data.sidebar.order) {
-                            if (_a.data.sidebar.order === _b.data.sidebar.order) {
-                                return _a.data.title.localeCompare(_b.data.title)
-                            }
-                            return _a.data.sidebar.order - _b.data.sidebar.order
-                        }
-
-                        return _a.data.title.localeCompare(_b.data.title)
-                    }
-
-                    return _a.data.title.localeCompare(_b.data.title)
-                }
-            })
+        // console.log(entries)
 
         entries.forEach(entry => {
             const fullPath = path.join(dir, entry.name)
@@ -61,9 +101,6 @@ function traverseDirectory (dir, parent) {
                 parent.items.push(new_section)
                 traverseDirectory(fullPath, new_section) // Рекурсивно обходимо підкаталог
             } else {
-                if (entry.name.includes('__section')) {
-                    return
-                }
                 if (entry.name.includes('index')) {
                     parent.items.unshift(getSlug(fullPath, root_docs, '/'))
                 } else {

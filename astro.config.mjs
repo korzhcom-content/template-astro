@@ -23,8 +23,9 @@ export default defineConfig({
 			favicon: '/favicon.ico',
 			social: [],
 			sidebar: [
-				{ label: "Introduction", slug: "introduction" },
+				// { label: "Introduction", slug: "introduction" },
 				...getSidebar("./src/content/docs/getting-started", true),
+				...getSidebar("./src/content/docs/sorting", false),
 			],
 			customCss: [
 				'./src/styles/index.css',

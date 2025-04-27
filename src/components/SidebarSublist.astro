@@ -61,7 +61,7 @@ const new_sublist = (nested ? sublist.slice(1) : sublist) || [] ;
 						<SidebarRestorePoint />
 						<summary>
 							<div class="group-label">
-								<a href={(entry.entries[0] as Link).href} class:list={[{ large: !nested }]}>
+								<a href={entry.entries[0] ? (entry.entries[0] as Link).href : "#"} class:list={[{ large: !nested }]}>
 									<span class="large">{entry.label}</span>
 								</a>
 								{entry.badge && (
