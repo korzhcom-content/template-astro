@@ -20,6 +20,10 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Component.Name',
+			logo: {
+				dark : './src/assets/korzh-docs-white.png',
+				light: './src/assets/korzh-docs-black.png',
+			},
 			favicon: '/favicon.ico',
 			social: [],
 			sidebar: [
