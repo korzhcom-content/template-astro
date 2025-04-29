@@ -65,14 +65,20 @@ const sortBy = (a , b) => {
 }
 
 const sortEntries = (a, b) => {
-    const [aOrder, aName] = getEntryPointData(a)
-    const [bOrder, bName] = getEntryPointData(b)
+    let [aOrder, aName] = getEntryPointData(a)
+    let [bOrder, bName] = getEntryPointData(b)
+
+    if (a.name === 'index.md') { aOrder = 100 }
+    if (b.name === 'index.md') { bOrder = 100 }
 
     if (aOrder < 0 || bOrder < 0) {
         // console.log(`Compare by name: ${aName} vs ${bName}`)
         return aName.localeCompare(bName, "en")
     }
-    // console.log(`Compare by order: ${a.name} vs ${b.name}`)
+    // if (a.parentPath.includes('common-sql')) {
+    //     console.log(`Compare by order: ${a.name} ${aOrder} vs ${b.name} ${bOrder}`)
+    // }
+
     return aOrder - bOrder
 }
 
@@ -88,7 +94,7 @@ function traverseDirectory (dir, parent) {
           })
           .sort(sortEntries)
 
-        // console.log(entries)
+        // console.log(entries.filter(entry => entry.parentPath.includes('common-sql')))
 
         entries.forEach(entry => {
             const fullPath = path.join(dir, entry.name)
