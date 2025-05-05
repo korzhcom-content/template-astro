@@ -1,7 +1,8 @@
-import fs from 'fs';
+import fs, { readFileSync } from 'fs'
 import path from 'path';
 import { Progress } from '@olton/progress'
 import { Screen } from '@olton/terminal'
+import matter from 'gray-matter';
 
 if (process.argv.length < 3) {
     console.error("Usage: node create-indexes.js <folder path>");
@@ -12,6 +13,74 @@ Screen.clear()
 
 const rootFolder = process.argv[2];
 const dirs = [];
+const root_docs = ['src', 'content', 'docs'].join(path.sep) + path.sep
+
+const getSlug = (fullPath, root, sep) => {
+    return `${fullPath.replace(root, '').replace(/\\/g, '/')}`
+        .split(sep)
+        .join(sep)
+}
+
+const isEmpty = (obj) => {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
+const getSectionSubsections = (folderPath) => {
+    const subsections = fs.readdirSync(folderPath, { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => [entry.name, entry.parentPath]);
+
+    if (subsections.length === 0) {
+        return '';
+    }
+
+    let content = '## Subsections:\n';
+
+    for (const [subsection_name, subsection_path] of subsections ) {
+        content += `- [${subsection_name}](${getSlug(subsection_path+path.sep+subsection_name, root_docs, "/")})\n`;
+    }
+
+    content += `---\n`;
+
+    return content;
+}
+
+const getSectionArticles = (folderPath) => {
+    const articles = fs.readdirSync(folderPath, { withFileTypes: true })
+        .filter(entry => entry.isFile() && entry.name !== "index.md" && entry.name !== "__section.md" && (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')))
+        .map(entry => [entry.name, entry.parentPath]).sort((a, b) => {
+            let fileContentA = readFileSync(path.resolve(a[1], a[0]), 'utf-8').trim()
+            let { data: frontmatterA } = matter(fileContentA)
+
+            let fileContentB = readFileSync(path.resolve(b[1], b[0]), 'utf-8').trim()
+            let { data: frontmatterB } = matter(fileContentB)
+
+            return frontmatterA.sidebar.order - frontmatterB.sidebar.order
+        })
+
+    if (articles.length === 0) {
+        return '';
+    }
+
+    let content = '\n---\n## In this section:\n';
+
+    for (const [article_name, article_path] of articles ) {
+        let fileContent = readFileSync(path.resolve(article_path, article_name), 'utf-8').trim()
+        let { data: frontmatter } = matter(fileContent)
+        const frontMatterPresent = isEmpty(frontmatter) === false
+
+        if (frontMatterPresent) {
+            const { title, slug = '' } = frontmatter;
+            content += `- [${title}](${slug})\n`;
+        }
+    }
+
+    content += `---\n`;
+
+    content += getSectionSubsections(folderPath);
+
+    return content;
+}
 
 const getDirectories = source => {
     fs.readdirSync(source, { withFileTypes: true }).forEach(entry => {
@@ -33,7 +102,7 @@ const progressBar = new Progress({
 
 function processFolder(folderPath) {
     progressBar.process()
-    
+
     const sectionFile = path.join(folderPath, '__section.md');
     const indexFile = path.join(folderPath, 'index.md');
 
@@ -41,7 +110,7 @@ function processFolder(folderPath) {
         // console.warn(`No __section.md found in ${folderPath}, skipping.`);
         return;
     }
-    
+
     let content = fs.readFileSync(sectionFile, 'utf8');
     let lines = content.split('\n');
 
@@ -52,6 +121,8 @@ function processFolder(folderPath) {
 
         const frontMatter = `---\ntitle: ${caption}\n---\n\n`;
         content = frontMatter + lines.join('\n');
+
+        content += getSectionArticles(folderPath);
 
         fs.writeFileSync(indexFile, content, 'utf8');
     }
