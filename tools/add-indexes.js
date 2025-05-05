@@ -37,7 +37,9 @@ const getSectionSubsections = (folderPath) => {
     let content = '## Subsections:\n';
 
     for (const [subsection_name, subsection_path] of subsections ) {
-        content += `- [${subsection_name}](${getSlug(subsection_path+path.sep+subsection_name, root_docs, "/")})\n`;
+        let fileContent = readFileSync(path.resolve(subsection_path, subsection_name, "index.md"), 'utf-8').trim()
+        let { data: frontmatter } = matter(fileContent)
+        content += `- [${frontmatter.title}](${getSlug(subsection_path+path.sep+subsection_name, root_docs, "/")})\n`;
     }
 
     content += `---\n`;
@@ -55,7 +57,7 @@ const getSectionArticles = (folderPath) => {
             let fileContentB = readFileSync(path.resolve(b[1], b[0]), 'utf-8').trim()
             let { data: frontmatterB } = matter(fileContentB)
 
-            return frontmatterA.sidebar.order - frontmatterB.sidebar.order
+            return (frontmatterA.sidebar?.order || 0) - (frontmatterB.sidebar?.order || 0)
         })
 
     if (articles.length === 0) {
