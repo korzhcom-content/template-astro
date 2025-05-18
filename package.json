@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.34.3",
-    "@olton/spider": "^0.1.0",
+    "@olton/spider": "^0.2.0",
     "@olton/terminal": "^0.6.0",
     "astro": "^5.7.13",
     "fs-extra": "^11.3.0",
