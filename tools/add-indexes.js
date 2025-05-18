@@ -1,7 +1,6 @@
 import fs, { readFileSync } from 'fs'
 import path from 'path';
-import { Progress } from '@olton/progress'
-import { Screen } from '@olton/terminal'
+import { Screen, Progress } from '@olton/terminal'
 import matter from 'gray-matter';
 
 if (process.argv.length < 3) {

@@ -5,8 +5,7 @@ import { globSync } from 'glob';
 import { readFileSync, writeFileSync, renameSync } from 'fs';
 import { basename, dirname, sep } from 'path';
 import matter from 'gray-matter';
-import { Progress } from "@olton/progress"
-import { Screen } from "@olton/terminal"
+import { Screen, Progress } from "@olton/terminal"
 
 if (process.argv.length < 3) {
     console.error("Usage: node add-frontmatter.js <folder path>");
