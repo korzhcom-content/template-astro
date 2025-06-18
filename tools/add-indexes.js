@@ -1,14 +1,12 @@
 import fs, { readFileSync } from 'fs'
 import path from 'path';
-import { Screen, Progress } from '@olton/terminal'
+// import { Screen, Progress } from '@olton/terminal'
 import matter from 'gray-matter';
 
 if (process.argv.length < 3) {
     console.error("Usage: node create-indexes.js <folder path>");
     process.exit(1);
 }
-
-Screen.clear()
 
 const rootFolder = process.argv[2];
 const dirs = [];
@@ -59,24 +57,24 @@ const getSectionArticles = (folderPath) => {
             return (frontmatterA.sidebar?.order || 0) - (frontmatterB.sidebar?.order || 0)
         })
 
-    if (articles.length === 0) {
-        return '';
-    }
+    let content = '';
 
-    let content = '\n---\n## In this section:\n';
+    if (articles.length > 0) {
+        content = '\n---\n## In this section:\n';
 
-    for (const [article_name, article_path] of articles ) {
-        let fileContent = readFileSync(path.resolve(article_path, article_name), 'utf-8').trim()
-        let { data: frontmatter } = matter(fileContent)
-        const frontMatterPresent = isEmpty(frontmatter) === false
+        for (const [article_name, article_path] of articles ) {
+            let fileContent = fs.readFileSync(path.resolve(article_path, article_name), 'utf-8').trim()
+            let { data: frontmatter } = matter(fileContent)
+            const frontMatterPresent = isEmpty(frontmatter) === false
 
-        if (frontMatterPresent) {
-            const { title, slug = '' } = frontmatter;
-            content += `- [${title}](${slug})\n`;
+            if (frontMatterPresent) {
+                const { title, slug = '' } = frontmatter;
+                content += `- [${title}](${slug})\n`;
+            }
         }
-    }
 
-    content += `---\n`;
+        content += `---\n`;
+    }
 
     content += getSectionSubsections(folderPath);
 
@@ -97,12 +95,8 @@ getDirectories(rootFolder)
 
 console.log(`\nAdding indexes...\n`)
 
-const progressBar = new Progress({
-    total: dirs.length,
-})
-
 function processFolder(folderPath) {
-    progressBar.process()
+    console.log(`Processing folder: ${folderPath}`);
 
     const sectionFile = path.join(folderPath, '__section.md');
     const indexFile = path.join(folderPath, 'index.md');
@@ -120,7 +114,7 @@ function processFolder(folderPath) {
         let caption = lines[captionIndex].replace(/^#+\s*/, ''); // Remove '#' and spaces
         lines.splice(captionIndex, 1); // Remove the heading from content
 
-        const frontMatter = `---\ntitle: ${caption}\n---\n\n`;
+        const frontMatter = `---\ntitle: "${caption}"\n---\n\n`;
         content = frontMatter + lines.join('\n');
 
         content += getSectionArticles(folderPath);
