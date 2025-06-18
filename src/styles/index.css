@@ -126,8 +126,3 @@ table {
 .sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
     padding-inline-start: 1rem;
 }
-
-code {
-    border-radius: 4px;
-    white-space: nowrap;
-}
