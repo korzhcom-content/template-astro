@@ -63,7 +63,11 @@ function frontmatter(path, options = {}) {
             lines.shift()
             content = lines.join('\n')
         }
-        slug = file.replace('src\\content\\docs\\', '').replace('.md', '').replaceAll('\\', '/')
+        slug = file
+            .replace('src\\content\\docs\\', '')
+            .replace('src/content/docs/', '')
+            .replace('.md', '')
+            .replaceAll('\\', '/')
 
         frontmatter.title = title
         frontmatter.slug = slug        
