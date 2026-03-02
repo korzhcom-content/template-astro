@@ -126,3 +126,7 @@ table {
 .sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
     padding-inline-start: 1rem;
 }
+
+.sl-markdown-content table:not(:where(.not-content *)) {
+    font-size: 0.8em;
+}
